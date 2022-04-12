@@ -4,7 +4,7 @@ import {useReducer} from 'react';
 const defaultCartState = {
   items: [],
   totalAmount: 0
-}
+};
 
 const cartReducer = (state, action) => {
   switch (action.type) {
@@ -28,7 +28,23 @@ const cartReducer = (state, action) => {
         totalAmount
       };
     case 'REMOVE_ITEM':
-      return;
+      const itemIndex = state.items.findIndex(item => item.id === action.id);
+      const item = state.items[itemIndex];
+
+      if (state.items[itemIndex].amount === 1) {
+        return {
+          items: [...state.items.filter(item => item.id !== action.id)],
+          totalAmount: state.totalAmount - item.price
+        }
+      }
+
+      const updatedItems = [...state.items];
+      updatedItems[itemIndex] = {...item, amount: item.amount - 1};
+
+      return {
+        items: updatedItems,
+        totalAmount: state.totalAmount - item.price
+      }
     default:
       return state;
   }
