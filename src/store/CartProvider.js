@@ -9,10 +9,23 @@ const defaultCartState = {
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_ITEM':
-      // TODO: check if item already exists
+      const totalAmount = state.totalAmount + action.item.price * action.item.amount;
+
+      if (state.items.some(item => item.id === action.item.id)) {
+        return {
+          items: state.items.map(item => item.id !== action.item.id ?
+            item :
+            {
+              ...item,
+              amount: item.amount + action.item.amount
+            }),
+          totalAmount
+        };
+      }
+
       return {
         items: [...state.items, action.item],
-        totalAmount: state.totalAmount + action.item.price * action.item.amount
+        totalAmount
       };
     case 'REMOVE_ITEM':
       return;
